@@ -1,5 +1,11 @@
 # Backend Detection Demo
 
+## Notice
+
+I only add a demo endpoint for change detection. It will receive the longitude and latitude from the user and give back the supervised learning results derived from geemap.
+
+The response should contain both the result image and legend info. I only finished the legend info part. The image part is very hard and has several difficulties that need group discussions.
+
 ## How to run the repo
 
 1. Make sure installing the following dependencies first.

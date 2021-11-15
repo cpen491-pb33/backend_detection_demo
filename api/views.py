@@ -7,14 +7,19 @@ from .models import Detection
 from .serializers import GeoCoordinatesSerializer, DetectionSerializer
 
 # Create your views here.
+
+
 class DetectionView(APIView):
     def post(self, request, format=None):
+        print(request)
+        print(request.data)
         geo_serializer = GeoCoordinatesSerializer(data=request.data)
         if geo_serializer.is_valid():
             lng = geo_serializer.data.get('lng')
             lat = geo_serializer.data.get('lat')
 
-            class_values, class_names, class_palette = self.supervised_learning(lng, lat)
+            class_values, class_names, class_palette = self.supervised_learning(
+                lng, lat)
 
             detection = Detection(class_values, class_names, class_palette)
 
@@ -49,13 +54,15 @@ class DetectionView(APIView):
         Map.centerObject(point, 8)
         Map.addLayer(image, vis_params, "Landsat-8")
 
-        imageDate = ee.Date(image.get('system:time_start')).format('YYYY-MM-dd').getInfo()
+        imageDate = ee.Date(image.get('system:time_start')
+                            ).format('YYYY-MM-dd').getInfo()
         print('imageDate', imageDate)
         imageInfo = image.get('CLOUD_COVER').getInfo()
         print('imageInfo', imageInfo)
 
         # Add labelling
-        nlcd = ee.Image('USGS/NLCD/NLCD2016').select('landcover').clip(image.geometry())
+        nlcd = ee.Image(
+            'USGS/NLCD/NLCD2016').select('landcover').clip(image.geometry())
         Map.addLayer(nlcd, {}, 'NLCD')
 
         # Make the training dataset.
